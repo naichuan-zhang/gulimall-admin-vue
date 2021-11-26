@@ -34,7 +34,7 @@ const mainRoutes = {
   ],
   beforeEnter (to, from, next) {
     let token = Vue.cookie.get('token')
-    if (!token || /\S/.test(token)) {
+    if (!token || !/\S/.test(token)) {
       clearLoginInfo()
       next({name: 'login'})
     }
