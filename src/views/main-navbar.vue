@@ -91,7 +91,9 @@ export default {
         this.$http.post(this.$http.adornUrl('/sys/logout'), this.$http.adornData()).then(({data}) => {
           if (data && data.code === 0) {
             clearLoginInfo()
-            this.$router.push({name: 'login'})
+            this.$nextTick(() => {
+              this.$router.push({name: 'login'})
+            })
           }
         })
       }).catch(() => {})
