@@ -1,10 +1,80 @@
 <template>
-
+  <div class="site-sidebar" :class="'site-sidebar--' + sidebarLayoutSkin">
+    <div class="site-sidebar__inner">
+      <el-menu class="site-sidebar__menu" :default-active="menuActiveName || 'home'" :collapse="sidebarFold" :collapse-transition="false">
+        <el-menu-item index="home" @click="$router.push({name: 'home'})">
+          <icon-svg name="shouye" class-name="site-sidebar__menu-icon"></icon-svg>
+          <span slot="title">首页</span>
+        </el-menu-item>
+        <el-submenu index="demo">
+          <template slot="title">
+            <icon-svg name="shoucang" class-name="site-sidebar__menu-icon"></icon-svg>
+            <span>Demo</span>
+          </template>
+          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'demo-echarts' })">
+            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
+            <span slot="title">echarts</span>
+          </el-menu-item>
+          <el-menu-item index="demo-ueditor" @click="$router.push({ name: 'demo-ueditor' })">
+            <icon-svg name="editor" class="site-sidebar__menu-icon"></icon-svg>
+            <span slot="title">ueditor</span>
+          </el-menu-item>
+        </el-submenu>
+        <sub-menu v-for="menu in menuList" :key="menu.menuId" :menu="menu" :dynamicMenuRoutes="dynamicMenuRoutes"></sub-menu>
+      </el-menu>
+    </div>
+  </div>
 </template>
 
 <script>
+import SubMenu from '@/views/main-sidebar-sub-menu'
+import {isURL} from '@/utils/validate'
 export default {
-  name: "main-sidebar"
+  name: 'main-sidebar',
+  components: {SubMenu},
+  data () {
+    return {
+      dynamicMenuRoutes: []
+    }
+  },
+  computed: {
+    sidebarLayoutSkin: {
+      get () { return this.$store.state.common.sidebarLayoutSkin }
+    },
+    sidebarFold: {
+      get () { return this.$store.state.common.sidebarFold }
+    },
+    menuList: {
+      get () { return this.$store.state.common.menuList },
+      set (val) { this.$store.commit('common/updateMenuList', val) }
+    },
+    menuActiveName: {
+      get () { return this.$store.state.common.menuActiveName },
+      set (val) { this.$store.commit('common/updateMenuActiveName', val) }
+    },
+    mainTabs: {
+      get () { return this.$store.state.common.mainTabs },
+      set (val) { this.$store.commit('common/updateMainTabs', val) }
+    },
+    mainTabsActiveName: {
+      get () { return this.$store.state.common.mainTabsActiveName },
+      set (val) { this.$store.commit('common/updateMainTabsActiveName', val) }
+    }
+  },
+  watch: {
+    $route: 'routeHandle'
+  },
+  created () {
+    this.menuList = JSON.parse(sessionStorage.getItem('menuList') || [])
+    this.dynamicMenuRoutes = JSON.parse(sessionStorage.getItem('dynamicMenuRoutes') || '')
+    this.routeHandle(this.$route)
+  },
+  methods: {
+    // 路由操作
+    routeHandle (route) {
+      // TODO impl this later
+    }
+  }
 }
 </script>
 
