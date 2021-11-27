@@ -20,7 +20,8 @@
             <span slot="title">ueditor</span>
           </el-menu-item>
         </el-submenu>
-        <sub-menu v-for="menu in menuList" :key="menu.menuId" :menu="menu" :dynamicMenuRoutes="dynamicMenuRoutes"></sub-menu>
+        <sub-menu v-for="menu in menuList" :key="menu.menuId" :is-root="true"
+                  :menu="menu" :dynamic-menu-routes="dynamicMenuRoutes"></sub-menu>
       </el-menu>
     </div>
   </div>
@@ -67,12 +68,38 @@ export default {
   created () {
     this.menuList = JSON.parse(sessionStorage.getItem('menuList') || [])
     this.dynamicMenuRoutes = JSON.parse(sessionStorage.getItem('dynamicMenuRoutes') || '')
+    console.log(JSON.parse(sessionStorage.getItem('menuList') || []))
+    console.log(JSON.parse(sessionStorage.getItem('dynamicMenuRoutes') || ''))
     this.routeHandle(this.$route)
   },
   methods: {
     // 路由操作
     routeHandle (route) {
-      // TODO impl this later
+      console.log(route)
+      if (route.meta.isTab) {
+        // tab选中，不存在先添加
+        var tab = this.mainTabs.filter(item => item.name === route.name)[0]
+        if (!tab) {
+          if (route.meta.isDynamic) {
+            route = this.dynamicMenuRoutes.filter(item => item.name === route.name)[0]
+            if (!route) {
+              return console.error('未能找到可用标签页！')
+            }
+          }
+          tab = {
+            menuId: route.meta.menuId || route.name,
+            name: route.name,
+            title: route.meta.title,
+            type: isURL(route.meta.iframe) ? 'iframe' : 'module',
+            iframeUrl: route.meta.iframeUrl || '',
+            params: route.params,
+            query: route.query
+          }
+          this.mainTabs = this.mainTabs.concat(tab)
+        }
+        this.menuActiveName = tab.menuId + ''
+        this.mainTabsActiveName = tab.name
+      }
     }
   }
 }
