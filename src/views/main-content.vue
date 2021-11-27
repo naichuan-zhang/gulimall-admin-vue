@@ -31,10 +31,10 @@
 </template>
 
 <script>
-import {isURL} from "@/utils/validate";
+import {isURL} from '@/utils/validate'
 
 export default {
-  name: "main-content",
+  name: 'main-content',
   inject: ['refresh'],
   data () {
     return {}
@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     selectedTabHandle (tab) {
-      tab = this.mainTabs.filters(item => item.name === tab.name)
+      tab = this.mainTabs.filter(item => item.name === tab.name)
       if (tab.length > 0) {
         this.$router.push({name: tab[0].name, query: tab[0].query, params: tab[0].params})
       }

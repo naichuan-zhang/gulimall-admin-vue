@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import http from '@/utils/httpRequest'
 import {isURL} from '@/utils/validate'
 import {clearLoginInfo} from '@/utils'
-import ca from "element-ui/src/locale/lang/ca";
 
 Vue.use(Router)
 
@@ -29,7 +28,7 @@ const mainRoutes = {
     // 2. iframeUrl: 是否通过iframe嵌套展示内容, '以http[s]://开头': 是, '': 否
     // 提示: 如需要通过iframe嵌套展示内容, 但不通过tab打开, 请自行创建组件使用iframe处理!
     { path: '/home', component: _import.default('common/home'), name: 'home', meta: { title: '首页' } },
-    { path: '/theme', component: _import.default('common/theme'), name: 'theme', meta: { title: '主题' } },
+    { path: '/theme', component: _import.default('common/theme'), name: 'theme', meta: { title: '主题' } }
     // { path: '/demo-echarts', component: _import.default('demo/echarts'), name: 'demo-echarts', meta: { title: 'demo-echarts', isTab: true } },
     // { path: '/demo-ueditor', component: _import.default('demo/ueditor'), name: 'demo-ueditor', meta: { title: 'demo-ueditor', isTab: true } }
   ],
@@ -118,7 +117,8 @@ function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
           temp.push(menuList[i].list[j])
         }
       }
-    } else if (menuList[i].url && /\S/.test(menuList[i].url)) {
+    }
+    if (menuList[i].url && /\S/.test(menuList[i].url)) {
       // 如果当前菜单没有子菜单并且url不为空时
       // 去掉url开头的/，例如：sys/log，sys/login等
       menuList[i].url = menuList[i].url.replace(/^\//, '')

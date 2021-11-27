@@ -80,7 +80,9 @@ export default {
   methods: {
     updatePasswordHandle () {
       this.updatePasswordVisible = true
-      this.$refs.updatePassword.init()
+      this.$nextTick(() => {
+        this.$refs.updatePassword.init()
+      })
     },
     logoutHandle () {
       this.$confirm(`确定进行[退出]操作？`, '提示', {
