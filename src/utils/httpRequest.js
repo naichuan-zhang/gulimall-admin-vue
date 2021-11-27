@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import axios from 'axios'
 import router from '@/router'
-import merge from "webpack-merge";
+import merge from 'webpack-merge'
+import {clearLoginInfo} from '@/utils/index'
 
 const http = axios.create({
   timeout: 1000 * 30,
@@ -15,6 +16,7 @@ const http = axios.create({
  * 请求拦截
  */
 http.interceptors.request.use(config => {
+  console.log(config)
   // 请求头上带上token
   config.headers['token'] = Vue.cookie.get('token')
   return config
@@ -26,6 +28,7 @@ http.interceptors.request.use(config => {
  * 响应拦截
  */
 http.interceptors.response.use(response => {
+  console.log(response)
   // 如果返回码为401（未授权），则跳转到登录页面
   if (response.data && response.data.code === 401) {
     clearLoginInfo()

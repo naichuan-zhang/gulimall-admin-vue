@@ -6,6 +6,9 @@
     <template v-if="!loading">
       <main-navbar/>
       <main-sidebar/>
+      <div class="site-content__wrapper" :style="{'min-height': documentClientHeight + 'px'}">
+        <main-content v-if="!$store.state.common.contentIsNeedRefresh"/>
+      </div>
     </template>
   </div>
 </template>
@@ -13,7 +16,67 @@
 <script>
 import MainNavbar from '@/views/main-navbar'
 import MainSidebar from '@/views/main-sidebar'
+import MainContent from '@/views/main-content'
 export default {
-  components: {MainSidebar, MainNavbar}
+  provide () {
+    return {
+      refresh () {
+        this.$store.commit('common/updateContentIsNeedRefresh', true)
+        this.$nextTick(() => {
+          this.$store.commit('common/updateContentIsNeedRefresh', false)
+        })
+      }
+    }
+  },
+  data () {
+    return {
+      loading: true
+    }
+  },
+  components: {
+    MainContent,
+    MainSidebar,
+    MainNavbar
+  },
+  computed: {
+    documentClientHeight: {
+      get () { return this.$store.state.common.documentClientHeight },
+      set (val) { this.$store.commit('common/updateDocumentClientHeight', val) }
+    },
+    sidebarFold: {
+      get () { return this.$store.state.common.sidebarFold }
+    },
+    userId: {
+      get () { return this.$store.state.user.id },
+      set (val) { this.$store.commit('user/updateId', val) }
+    },
+    userName: {
+      get () { return this.$store.state.user.name },
+      set (val) { this.$store.commit('user/updateName', val) }
+    }
+  },
+  created () {
+    this.getUserInfo()
+  },
+  mounted () {
+    this.resetDocumentClientHeight()
+  },
+  methods: {
+    resetDocumentClientHeight () {
+      this.documentClientHeight = document.documentElement['clientHeight']
+      window.onresize = () => {
+        this.documentClientHeight = document.documentElement['clientHeight']
+      }
+    },
+    getUserInfo () {
+      this.$http.get(this.$http.adornUrl('/sys/user/info'), {params: this.$http.adornParams()}).then(({data}) => {
+        if (data && data.code === 0) {
+          this.loading = false
+          this.userId = data.user.userId
+          this.userName = data.user.userName
+        }
+      })
+    }
+  }
 }
 </script>
