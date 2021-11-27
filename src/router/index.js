@@ -112,7 +112,12 @@ function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
   for (var i = 0; i < menuList.length; i++) {
     if (menuList[i].list && menuList[i].list.length > 0) {
       // 如果当前菜单还包含子菜单时，添加到temp
-      temp = temp.concat(menuList[i].list)
+      for (var j = 0; j < menuList[i].list.length; j++) {
+        // temp = temp.concat(menuList[i].list)
+        if (menuList[i].list[j].url) {
+          temp.push(menuList[i].list[j])
+        }
+      }
     } else if (menuList[i].url && /\S/.test(menuList[i].url)) {
       // 如果当前菜单没有子菜单并且url不为空时
       // 去掉url开头的/，例如：sys/log，sys/login等
