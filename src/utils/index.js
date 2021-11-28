@@ -25,10 +25,28 @@ export function isAuth (key) {
  * @param id
  * @param pid
  */
-export function treeDataTranslate (data, id = 'id', pid = 'parentId') {
+export function treeDataTranslate (data, id = 'menuId', pid = 'parentId') {
   var res = []
   var temp = {}
-  // TODO impl this later
+  for (var i = 0; i < data.length; i++) {
+    temp[data[i][id]] = data[i]
+  }
+  for (var k = 0; k < data.length; k++) {
+    var curr = data[k]
+    if (temp[curr[pid]] && curr[id] !== curr[pid]) {
+      if (!temp[curr[pid]]['children']) {
+        temp[curr[pid]]['children'] = []
+      }
+      if (!temp[curr[pid]]['_level']) {
+        temp[curr[pid]]['_level'] = 1
+      }
+      curr['_level'] = temp[curr[pid]]['_level'] + 1
+      temp[curr[pid]]['children'].push(curr)
+    } else {
+      res.push(curr)
+    }
+  }
+  console.log(res)
   return res
 }
 

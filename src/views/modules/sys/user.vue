@@ -2,12 +2,12 @@
   <div class="mod-user">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <input v-model="dataForm.userName" placeholder="用户名" clearable/>
+        <el-input v-model="dataForm.userName" placeholder="用户名" clearable/>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button v-if="isAuth('sys:user:save')" type="primary" @click="addOrUpdateHandle">新增</el-button>
-        <el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
@@ -39,7 +39,6 @@
 
 <script>
 import {isAuth} from '@/utils'
-import AddOrUpdate from 'user-add-or-update'
 import UserAddOrUpdate from '@/views/modules/sys/user-add-or-update'
 export default {
   components: {UserAddOrUpdate},
@@ -79,6 +78,7 @@ export default {
           this.dataList = []
           this.totalPage = 0
         }
+        this.dataListLoading = false
       })
     },
     sizeChangeHandle (val) {
@@ -96,11 +96,15 @@ export default {
         this.$refs.addOrUpdate.init()
       })
     },
+    selectionChangeHandle (selection) {
+      this.dataListSelections = selection
+    },
     deleteHandle (id) {
       var userIds = id ? [id] : this.dataListSelections.map(item => {
         return item.userId
       })
-      this.$confirm(`确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作吗？`, '提示', {
+      console.log(userIds)
+      this.$confirm(`确定对[id=${userIds.join(',').toString()}]进行[${id ? '删除' : '批量删除'}]操作吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -128,7 +132,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>
