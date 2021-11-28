@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import '@/icons'
 export default {
 }
 </script>

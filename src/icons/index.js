@@ -16,7 +16,11 @@ import './iconfont.js'
 
 Vue.component('IconSvg', IconSvg)
 
-const svgFiles = require.context('./svg', true, /\.svg$/)
+const svgFiles = require.context('./svg', false, /\.svg$/)
+
+const requireAll = requireContext => requireContext.keys().map(requireContext)
+requireAll(svgFiles)
+
 const iconList = svgFiles.keys().map(item => svgFiles(item))
 
 export default {
